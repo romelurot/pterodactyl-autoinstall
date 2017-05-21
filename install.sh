@@ -124,8 +124,8 @@ function panel_installing {
 
   php artisan pterodactyl:env --dbhost=localhost --dbport=3306 --dbname=pterodactyl --dbuser=panel --dbpass=$password --url=http://$FQDN --timezone=$timezone --driver=memcached --queue-driver=database --session-driver=database
 
-  php artisan migrate
-  php artisan db:seed
+  php artisan migrate --force
+  php artisan db:seed --force
 
   php artisan pterodactyl:user --firstname=$firstname --lastname=$lastname --username=$username --email=$email --password=$password --admin=1
 
