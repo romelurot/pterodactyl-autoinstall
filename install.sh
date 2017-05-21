@@ -42,8 +42,17 @@ function required_vars_panel {
     output "Please enter your FQDN:"
     read FQDN
 
-    output "Please enter your timezone in PHP format"
+    output "Please enter your timezone in PHP format:"
     read timezone
+
+    output "Please enter your desired first name:"
+    read firstname
+
+    output "Please enter your desired last name:"
+    read lastname
+
+    output "Please enter your desired username:"
+    read username
 
     output "Please enter the desired user email address:"
     read email
@@ -113,12 +122,12 @@ function panel_installing {
 
   mysql -u root -e "$SQL"
 
-  php artisan pterodactyl:env --dbhost=localhost --dbport=3306 --dbname=pterodactyl --dbuser=panel --dbpass=$password --url=http://$FQDN --timezone=$timezone
+  php artisan pterodactyl:env --dbhost=localhost --dbport=3306 --dbname=pterodactyl --dbuser=panel --dbpass=$password --url=http://$FQDN --timezone=$timezone --cachedriver=memcached --sessiondriver=database
 
   php artisan migrate
   php artisan db:seed
 
-  php artisan pterodactyl:user --email=$email --password=$password --admin=1
+  php artisan pterodactyl:user --firstname=$firstname --lastname=$lastname --username=$username --email=$email --password=$password --admin=1
 
   chown -R www-data:www-data *
 }
