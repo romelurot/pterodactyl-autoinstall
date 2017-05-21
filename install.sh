@@ -122,20 +122,20 @@ function panel_installing {
 function panel_queuelisteners {
   (crontab -l ; echo "* * * * * php /var/www/pterodactyl/html/artisan schedule:run >> /dev/null 2>&1")| crontab -
 
-  cat > /etc/systemd/system/pteroq.service <<- "EOF"
-  # Pterodactyl Queue Worker File
-  [Unit]
-  Description=Pterodactyl Queue Worker
+cat > /etc/systemd/system/pteroq.service <<- "EOF"
+# Pterodactyl Queue Worker File
+[Unit]
+Description=Pterodactyl Queue Worker
 
-  [Service]
-  User=www-data
-  Group=www-data
-  Restart=on-failure
-  ExecStart=/usr/bin/php /var/www/html/pterodactyl/artisan queue:work database --queue=high,standard,low --sleep=3 --tries=3
+[Service]
+User=www-data
+Group=www-data
+Restart=on-failure
+ExecStart=/usr/bin/php /var/www/html/pterodactyl/artisan queue:work database --queue=high,standard,low --sleep=3 --tries=3
 
-  [Install]
-  WantedBy=multi-user.target
-  EOF
+[Install]
+WantedBy=multi-user.target
+EOF
 
   sudo systemctl enable pteroq.service
   sudo systemctl start pteroq
@@ -156,33 +156,33 @@ function panel_webserver_configuration_nginx {
 }
 
 function panel_webserver_configuration_apache {
-  cat > /etc/apache2/sites-available/pterodactyl.conf <<- "EOF"
-  <IfModule mod_ssl.c>
-  <VirtualHost *:443>
-          ServerAdmin webmaster@localhost
-          DocumentRoot "/var/www/pterodactyl/html/public"
-          AllowEncodedSlashes On
-          php_value upload_max_filesize 100M
-          php_value post_max_size 100M
-          <Directory "/var/www/pterodactyl/html/public">
-          AllowOverride all
-          </Directory>
+cat > /etc/apache2/sites-available/pterodactyl.conf << EOF
+<IfModule mod_ssl.c>
+<VirtualHost *:443>
+ServerAdmin webmaster@localhost
+DocumentRoot "/var/www/pterodactyl/html/public"
+AllowEncodedSlashes On
+php_value upload_max_filesize 100M
+php_value post_max_size 100M
+<Directory "/var/www/pterodactyl/html/public">
+AllowOverride all
+</Directory>
 
-          SSLEngine on
-          SSLCertificateFile /etc/letsencrypt/live/$FQDN/fullchain.pem
-          SSLCertificateKeyFile /etc/letsencrypt/live/$FQDN/privkey.pem
-          ServerName $FQDN
-  </VirtualHost>
-  </IfModule>
-  EOF
+SSLEngine on
+SSLCertificateFile /etc/letsencrypt/live/$FQDN/fullchain.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/$FQDN/privkey.pem
+ServerName $FQDN
+</VirtualHost>
+</IfModule>
+EOF
 
-  cat > /etc/apache2/sites-available/000-default.conf <<- "EOF"
-  <VirtualHost *:80>
-  RewriteEngine on
-  RewriteCond %{SERVER_NAME} =$FQDN
-  RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]
-  </VirtualHost>
-  EOF
+cat > /etc/apache2/sites-available/000-default.conf <<- "EOF"
+<VirtualHost *:80>
+RewriteEngine on
+RewriteCond %{SERVER_NAME} =$FQDN
+RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]
+</VirtualHost>
+EOF
 
   sudo ln -s /etc/apache2/sites-available/pterodactyl.conf /etc/apache2/sites-enabled/pterodactyl.conf
   sudo a2enmod rewrite
@@ -233,7 +233,7 @@ case $installoption in
             panel_installing
             panel_queuelisteners
             panel_webserver_configuration_nginx
-            output "Installation completed!"
+            output "Panel installation completed!"
             ;;
         2 ) install_apache_dependencies
             panel_downloading
@@ -241,7 +241,7 @@ case $installoption in
             panel_queuelisteners
             ssl_certs
             panel_webserver_configuration_apache
-            ok "Installation completed"
+            ok "Panel installation completed"
             ;;
       esac
 
@@ -251,15 +251,24 @@ case $installoption in
   2 ) #Daemon only
       update_kernel
       daemon_dependencies
-
       ;;
   3 ) webserverchoice #Panel and daemon, so we show the webserver selection
       required_vars_panel #Gather some user data we need for the installation
       case $webserver in #Install based on choice
-        1) install_nginx_dependencies
-           ;;
-        2) install_apache_dependencies
-           ;;
+        1 ) install_nginx_dependencies
+            ;;
+        2 ) install_apache_dependencies
+            panel_downloading
+            panel_installing
+            panel_queuelisteners
+            ssl_certs
+            panel_webserver_configuration_apache
+            ok "Panel installation completed"
+            update_kernel
+            daemon_dependencies
+            daemon_install
+            ok "Daemon installation completed"
+            ;;
       esac
       ;;
 esac
