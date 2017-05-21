@@ -200,7 +200,7 @@ EOF
 #All daemon related install functions
 function update_kernel {
   output "Updating kernel if needed"
-  apt install linux-image-extra-$(uname -r) linux-image-extra-virtual
+  apt install -y linux-image-extra-$(uname -r) linux-image-extra-virtual
 }
 
 function daemon_dependencies {
@@ -211,10 +211,10 @@ function daemon_dependencies {
 
   #Nodejs
   curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-  apt install nodejs
+  apt install -y nodejs
 
   #Additional
-  apt install tar unzip make gcc g++ python
+  apt install -y tar unzip make gcc g++ python
 }
 
 function daemon_install {
