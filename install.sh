@@ -1,7 +1,7 @@
 #!/bin/bash
 #Install script to install Pterodactyl panel v0.6.0 and Wings daemon v0.4.0 on Ubuntu 16.04
 function output() {
-  echo -e '\e[34m'$1'\e[0m'; #Blue text
+  echo -e '\e[93m'$1'\e[0m'; #Yellow text
 }
 
 function installchoice {
