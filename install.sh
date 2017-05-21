@@ -122,7 +122,7 @@ function panel_installing {
 
   mysql -u root -e "$SQL"
 
-  php artisan pterodactyl:env --dbhost=localhost --dbport=3306 --dbname=pterodactyl --dbuser=panel --dbpass=$password --url=http://$FQDN --timezone=$timezone --cachedriver=memcached --sessiondriver=database
+  php artisan pterodactyl:env --dbhost=localhost --dbport=3306 --dbname=pterodactyl --dbuser=panel --dbpass=$password --url=http://$FQDN --timezone=$timezone --driver=memcached --queue-driver=database --session-driver=database
 
   php artisan migrate
   php artisan db:seed
