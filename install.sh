@@ -59,6 +59,7 @@ function required_vars_daemon {
 
 #All panel related install functions
 function install_apache_dependencies {
+  output "Installing apache dependencies"
   # Add additional PHP packages.
   add-apt-repository -y ppa:ondrej/php
   curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
@@ -71,6 +72,7 @@ function install_apache_dependencies {
 }
 
 function install_nginx_dependencies {
+  output "Installing nginx dependencies"
   # Add additional PHP packages.
   add-apt-repository -y ppa:ondrej/php
   curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
@@ -83,6 +85,7 @@ function install_nginx_dependencies {
 }
 
 function panel_downloading {
+  output "Downloading the panel"
   mkdir -p /var/www/html/pterodactyl
   cd /var/www/html/pterodactyl
 
@@ -93,6 +96,7 @@ function panel_downloading {
 }
 
 function panel_installing {
+  output "Installing the panel"
   curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
 
   cp .env.example .env
@@ -120,6 +124,7 @@ function panel_installing {
 }
 
 function panel_queuelisteners {
+  output "Creating panel queue listeners"
   (crontab -l ; echo "* * * * * php /var/www/pterodactyl/html/artisan schedule:run >> /dev/null 2>&1")| crontab -
 
 cat > /etc/systemd/system/pteroq.service <<- "EOF"
@@ -142,6 +147,7 @@ EOF
 }
 
 function ssl_certs {
+  output "Generating SSL certificates"
   cd /root
   curl https://get.acme.sh | sh
   cd /root/.acme.sh/
@@ -156,6 +162,7 @@ function panel_webserver_configuration_nginx {
 }
 
 function panel_webserver_configuration_apache {
+  output "Configuring apache"
 cat > /etc/apache2/sites-available/pterodactyl.conf << EOF
 <IfModule mod_ssl.c>
 <VirtualHost *:443>
@@ -192,10 +199,12 @@ EOF
 
 #All daemon related install functions
 function update_kernel {
+  output "Updating kernel if needed"
   apt install linux-image-extra-$(uname -r) linux-image-extra-virtual
 }
 
 function daemon_dependencies {
+  output "Installing daemon dependecies"
   #Docker
   curl -sSL https://get.docker.com/ | sh
   systemctl enable docker
@@ -209,6 +218,7 @@ function daemon_dependencies {
 }
 
 function daemon_install {
+  output "Installing the daemon"
   mkdir -p /srv/daemon /srv/daemon-data
   cd /srv/daemon
   curl -Lo v0.4.0.tar.gz https://github.com/Pterodactyl/Daemon/archive/v0.4.0.tar.gz
@@ -241,12 +251,9 @@ case $installoption in
             panel_queuelisteners
             ssl_certs
             panel_webserver_configuration_apache
-            ok "Panel installation completed"
+            output "Panel installation completed"
             ;;
       esac
-
-
-
       ;;
   2 ) #Daemon only
       update_kernel
@@ -263,11 +270,12 @@ case $installoption in
             panel_queuelisteners
             ssl_certs
             panel_webserver_configuration_apache
-            ok "Panel installation completed"
+            output "Panel installation completed"
+
             update_kernel
             daemon_dependencies
             daemon_install
-            ok "Daemon installation completed"
+            output "Daemon installation completed"
             ;;
       esac
       ;;
