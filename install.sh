@@ -111,7 +111,7 @@ function panel_installing {
   Q3="FLUSH PRIVILEGES;"
   SQL="${Q1}${Q2}${Q3}"
 
-  mysql -u root -p="" -e "$SQL"
+  mysql -u root -e "$SQL"
 
   php artisan pterodactyl:env --dbhost=localhost --dbport=3306 --dbname=pterodactyl --dbuser=panel --dbpass=$password --url=http://$FQDN --timezone=$timezone
 
@@ -167,11 +167,11 @@ cat > /etc/apache2/sites-available/pterodactyl.conf << EOF
 <IfModule mod_ssl.c>
 <VirtualHost *:443>
 ServerAdmin webmaster@localhost
-DocumentRoot "/var/www/pterodactyl/html/public"
+DocumentRoot "/var/www/html/pterodactyl/public"
 AllowEncodedSlashes On
 php_value upload_max_filesize 100M
 php_value post_max_size 100M
-<Directory "/var/www/pterodactyl/html/public">
+<Directory "/var/www/html/pterodactyl/public">
 AllowOverride all
 </Directory>
 
@@ -186,7 +186,7 @@ EOF
 cat > /etc/apache2/sites-available/000-default.conf <<- "EOF"
 <VirtualHost *:80>
 RewriteEngine on
-RewriteCond %{SERVER_NAME} =$FQDN
+RewriteCond %{SERVER_NAME} = $FQDN
 RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]
 </VirtualHost>
 EOF
