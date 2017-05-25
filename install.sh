@@ -192,13 +192,7 @@ ServerName $FQDN
 </IfModule>
 EOF
 
-cat > /etc/apache2/sites-available/000-default.conf <<- "EOF"
-<VirtualHost *:80>
-RewriteEngine on
-RewriteCond %{SERVER_NAME} = $FQDN
-RewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]
-</VirtualHost>
-EOF
+echo -e "<VirtualHost *:80>\nRewriteEngine on\nRewriteCond %{SERVER_NAME} =$FQDN\nRewriteRule ^ https://%{SERVER_NAME}%{REQUEST_URI} [END,QSA,R=permanent]\n</VirtualHost>" > /etc/apache2/sites-available/000-default.conf
 
   sudo ln -s /etc/apache2/sites-available/pterodactyl.conf /etc/apache2/sites-enabled/pterodactyl.conf
   sudo a2enmod rewrite
