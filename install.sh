@@ -58,7 +58,7 @@ function required_vars_panel {
     read email
 
     output "Please enter the desired password:"
-    read password
+    read userpassword
 }
 
 function required_vars_daemon {
@@ -127,7 +127,7 @@ function panel_installing {
   php artisan migrate --force
   php artisan db:seed --force
 
-  php artisan pterodactyl:user --firstname=$firstname --lastname=$lastname --username=$username --email=$email --password=$password --admin=1
+  php artisan pterodactyl:user --firstname=$firstname --lastname=$lastname --username=$username --email=$email --password=$userpassword --admin=1
 
   chown -R www-data:www-data *
 }
