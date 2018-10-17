@@ -77,7 +77,7 @@ function install_apache_dependencies {
   apt update
 
   # Install Dependencies
-  apt-get -y install php7.1 php7.1-cli php7.1-gd php7.1-mysql php7.1-pdo php7.1-mbstring php7.1-tokenizer php7.1-bcmath php7.1-xml php7.1-curl php7.1-memcached php7.1-zip mariadb-server libapache2-mod-php apache2 curl tar unzip git memcached
+  apt -y install php7.1 php7.1-cli php7.1-gd php7.1-mysql php7.1-pdo php7.1-mbstring php7.1-tokenizer php7.1-bcmath php7.1-xml php7.1-curl php7.1-memcached php7.1-zip mariadb-server libapache2-mod-php apache2 curl tar unzip git memcached
 }
 
 function install_nginx_dependencies {
