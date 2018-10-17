@@ -262,11 +262,23 @@ case $installoption in
   2 ) #Daemon only
       update_kernel
       daemon_dependencies
+      daemon_install
+      output "Daemon installation completed"
       ;;
   3 ) webserverchoice #Panel and daemon, so we show the webserver selection
       required_vars_panel #Gather some user data we need for the installation
       case $webserver in #Install based on choice
         1 ) install_nginx_dependencies
+            panel_downloading
+            panel_installing
+            panel_queuelisteners
+            panel_webserver_configuration_nginx
+            output "Panel installation completed!"
+            
+            update_kernel
+            daemon_dependencies
+            daemon_install
+            output "Daemon installation completed"
             ;;
         2 ) install_apache_dependencies
             panel_downloading
