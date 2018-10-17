@@ -83,14 +83,15 @@ function install_apache_dependencies {
 function install_nginx_dependencies {
   output "Installing nginx dependencies"
   # Add additional PHP packages.
-  add-apt-repository -y ppa:ondrej/php
+  LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+  add-apt-repository -y ppa:chris-lea/redis-server
   curl -sS https://downloads.mariadb.com/MariaDB/mariadb_repo_setup | sudo bash
 
   # Update repositories list
   apt update
 
   # Install Dependencies
-  apt-get -y install php7.1 php7.1-cli php7.1-gd php7.1-mysql php7.1-pdo php7.1-mbstring php7.1-tokenizer php7.1-bcmath php7.1-xml php7.1-fpm php7.1-memcached php7.1-curl php7.1-zip mariadb-server nginx curl tar unzip git memcached
+  apt get -y install php7.2 php7.2-cli php7.2-gd php7.2-mysql php7.2-pdo php7.2-mbstring php7.2-tokenizer php7.2-bcmath php7.2-xml php7.2-fpm php7.2-curl php7.2-zip mariadb-server nginx curl tar unzip git redis-server
 }
 
 function panel_downloading {
