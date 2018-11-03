@@ -175,21 +175,25 @@ function panel_webserver_configuration_apache {
   output "Configuring apache"
 cat > /etc/apache2/sites-available/pterodactyl.conf << EOF
 <IfModule mod_ssl.c>
-<VirtualHost *:443>
-ServerAdmin webmaster@localhost
-DocumentRoot "/var/www/html/pterodactyl/public"
-AllowEncodedSlashes On
-php_value upload_max_filesize 100M
-php_value post_max_size 100M
-<Directory "/var/www/html/pterodactyl/public">
-AllowOverride all
-</Directory>
-
-SSLEngine on
-SSLCertificateFile /etc/letsencrypt/live/$FQDN/fullchain.pem
-SSLCertificateKeyFile /etc/letsencrypt/live/$FQDN/privkey.pem
-ServerName $FQDN
+<VirtualHost *:80>
+  ServerName $FQDN
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^/?(.*) https://%{SERVER_NAME}/$1 [R,L] 
 </VirtualHost>
+<VirtualHost *:443>
+  ServerName $FQDN
+  DocumentRoot "/var/www/pterodactyl/public"
+  AllowEncodedSlashes On
+  php_value upload_max_filesize 100M
+  php_value post_max_size 100M
+  <Directory "/var/www/pterodactyl/public">
+    AllowOverride all
+  </Directory>
+  SSLEngine on
+  SSLCertificateFile /etc/letsencrypt/live/$FQDN/fullchain.pem
+  SSLCertificateKeyFile /etc/letsencrypt/live/$FQDN/privkey.pem
+</VirtualHost> 
 </IfModule>
 EOF
 
