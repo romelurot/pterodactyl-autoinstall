@@ -1,5 +1,5 @@
 #!/bin/bash
-#Install script to install Pterodactyl panel v0.7.10 and Wings daemon v0.6.7 on Ubuntu 16.04
+
 function output() {
   echo -e '\e[93m'$1'\e[0m'; #Yellow text
 }
@@ -99,7 +99,7 @@ function panel_downloading {
   mkdir -p /var/www/html/pterodactyl
   cd /var/www/html/pterodactyl
 
-  curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.10/panel.tar.gz
+  curl -Lo panel.tar.gz https://github.com/pterodactyl/panel/releases/download/v0.7.11/panel.tar.gz
   tar --strip-components=1 -xzvf panel.tar.gz
 
   chmod -R 755 storage/* bootstrap/cache
@@ -225,7 +225,7 @@ function daemon_install {
   output "Installing the daemon"
   mkdir -p /srv/daemon /srv/daemon-data
   cd /srv/daemon
-  curl -Lo daemon.tar.gz https://github.com/pterodactyl/daemon/releases/download/v0.6.7/daemon.tar.gz  
+  curl -Lo daemon.tar.gz https://github.com/pterodactyl/daemon/releases/download/v0.6.8/daemon.tar.gz  
   tar --strip-components=1 -xzvf daemon.tar.gz
   npm install --only=production
 
